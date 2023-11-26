@@ -1,5 +1,7 @@
 package world.bentobox.aoneblock;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -167,7 +169,7 @@ public class PlaceholdersManager {
 	    return "";
 	return addon.getIslands().getProtectedIslandAt(Objects.requireNonNull(user.getLocation()))
 		.map(addon::getOneBlocksIsland).map(addon.getOneBlockManager()::getPercentageDone)
-		.map(num -> Math.round(num) + "%").orElse("");
+		.map(PlaceholdersManager::percentFormatter).orElse("");
     }
 
     /**
@@ -184,8 +186,30 @@ public class PlaceholdersManager {
 	    return "";
 	}
 	double num = addon.getOneBlockManager().getPercentageDone(addon.getOneBlocksIsland(i));
-	return Math.round(num) + "%";
+	return percentFormatter(num);
     }
+
+	/**
+	 * Formats percent double to string that always has 3 digits
+	 * @param percent
+	 * @return string percentage with two, one or none decimal places with '%' character at the end
+	 */
+	public static String percentFormatter(double percent) {
+
+		String format = "#";
+		double absNumber = Math.abs(percent);
+
+		if(absNumber < 10){
+			format = "#.##";
+		} else if(absNumber < 100){
+			format = "#.#";
+		}
+
+		DecimalFormat df = new DecimalFormat(format);
+		df.setRoundingMode(RoundingMode.FLOOR);
+
+		return df.format(percent) + "%";
+	}
 
     /**
      * Get percentage done of phase as colored scale based on user's location

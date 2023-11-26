@@ -804,7 +804,7 @@ public class OneBlocksManager {
      * @return percentage done. If there is no next phase then return 0
      */
     public double getPercentageDone(@NonNull OneBlockIslands obi) {
-	int blockNum = obi.getBlockNumber();
+	int blockNum = obi.getBlockNumber() - 1;
 	OneBlockPhase thisPhase = this.getPhase(blockNum);
 	if (thisPhase == null) {
 	    return 0;
@@ -818,7 +818,7 @@ public class OneBlocksManager {
 	    return 0;
 	}
 	int phaseSize = nextPhase.getBlockNumberValue() - thisPhase.getBlockNumberValue();
-	return 100 - (100 * (double) (nextPhase.getBlockNumberValue() - obi.getBlockNumber()) / phaseSize);
+	return 100 - (100 * (double) (nextPhase.getBlockNumberValue() - blockNum) / phaseSize);
     }
 
     public void getProbs(OneBlockPhase phase) {
